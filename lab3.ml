@@ -17,7 +17,7 @@ framework on the course grading server. Exercises 0, 1, 7, and 10 are
 required for full compilation.
 
  *)
-     
+
 (*======================================================================
 Part 1: Variants and invariants (two separate concepts)
 
@@ -33,7 +33,7 @@ create a new type.
 
 You might be tempted to do something simple like
 
-  type person = { name : string; 
+  type person = { name : string;
                   favorite : string;
                   birthday : string; } ;;
 
@@ -56,7 +56,15 @@ be any of the following options: red, crimson, orange, yellow, green,
 blue, indigo, or violet.
 ......................................................................*)
 
-type color_label = NotImplemented ;;
+type color_label =
+    Red
+  | Crimson
+  | Orange
+  | Yellow
+  | Green
+  | Blue
+  | Indigo
+  | Violet;;
 
 (* You've just defined a new variant type! But this is an overly
 simplistic representation of colors. Let's make it more usable.
@@ -91,7 +99,9 @@ channels. You'll want to use Simple and RGB as the value constructors
 in this new variant type.
 ......................................................................*)
 
-type color = NotImplemented ;;
+type color =
+  | Simple of color_label
+  | RGB of int * int * int;;
 
 (* Note that there is an important assumption about the RGB values
 that determine whether a color is valid or not. The RGB type contains
@@ -117,8 +127,13 @@ an Invalid_Color exception with a useful message.
 
 exception Invalid_Color of string ;;
 
-let valid_rgb = 
-  fun _ -> failwith "valid_rgb not implemented" ;;
+let valid_rgb col =
+  match col with
+  | Simple x -> Simple x
+  | RGB (a, b, c) -> if a > 255 || a < 0 || b > 255 || b < 0 || c > 255 || c < 0
+    then raise (Invalid_Color "not a color")
+    else RGB (a, b, c);;
+
 
 (*......................................................................
 Exercise 3: Write a function, make_color, that accepts three integers
@@ -126,7 +141,7 @@ for the channel values and returns a value of the color type. Be sure
 to verify the invariant.
 ......................................................................*)
 
-let make_color = 
+let make_color =
   fun _ -> failwith "make_color not implemented" ;;
 
 (*......................................................................
@@ -144,7 +159,7 @@ below are some other values you might find helpful.
     240 | 130 | 240 | Violet
 ......................................................................*)
 
-let convert_to_rgb = 
+let convert_to_rgb =
   fun _ -> failwith "convert_to_rgb not implemented" ;;
 
 (* If we want to blend two colors, we might be tempted to average each
@@ -169,7 +184,7 @@ and returns an integer whose result matches the calculation above. Be
 sure to round your result when converting back to an integer.
 ......................................................................*)
 
-let blend_channel = 
+let blend_channel =
   fun _ -> failwith "blend_channel not implemented" ;;
 
 (*......................................................................
@@ -178,10 +193,10 @@ blending two colors. Do you need to do anything special to preserve
 the invariant in this function after blending?
 ......................................................................*)
 
-let blend = 
+let blend =
   fun _ -> failwith "blend not implemented" ;;
 
-   
+
 (*======================================================================
 Part 2: Records
 
@@ -205,7 +220,12 @@ should be. Then, consider the implications of representing the overall
 data type as a tuple or a record.
 ......................................................................*)
 
-type date = NotImplemented ;;
+type date =
+  {
+    years : int;
+    months : int;
+    days : int;
+  };;
 
 (* After you've thought it through, look up the Date module in the
 OCaml documentation to see how this was implemented there. If you
@@ -246,9 +266,25 @@ the invariant is violated, and returns the date if valid.
 ......................................................................*)
 
 exception Invalid_Date of string ;;
+(* raise (Invalid_Date "not a date") *)
 
-let valid_date = 
-  fun _ -> failwith "valid_date not implemented" ;;
+let valid_date d =
+  match d with
+  | { years = x ; months = y ; days = z } ->
+    if y = 1 || y = 3 || y = 5 || y = 7 || y = 8 || y = 10 || y = 12 then
+      if z <= 31 && z > 0 then d else raise (Invalid_Date "not a date")
+    (* else if y = 4 || y = 6 || y = 9 || y = 11 then
+      (if z <= 30 && z > 0 then d else raise (Invalid_Date "not a date"))
+      (else if y = 2 then
+      (if z > 0 && z <= 28 then d else raise (Invalid_Date "not a date")) *)
+
+;;
+
+(*
+if (year is not divisible by 4) then (it is a common year)
+else if (year is not divisible by 100) then (it is a leap year)
+else if (year is not divisible by 400) then (it is a common year)
+else (it is a leap year) *)
 
 
 (*======================================================================
@@ -262,7 +298,10 @@ Exercise 10: Define a person record type. Use the field names "name",
 "favorite", and "birthdate".
 ......................................................................*)
 
-type person = NotImplemented ;;
+type person = {
+  name : string;
+  favorite : color;
+  birthdate : date;};;
 
 (* Let's now do something with these person values. We'll create a
 data structure that allows us to model simple familial relationships.
@@ -301,7 +340,7 @@ ensure the invariants are preserved for color and date, use them here
 as well.
 ......................................................................*)
 
-let new_child = 
+let new_child n c d =
   fun _ -> failwith "new_child not implemented" ;;
 
 (*......................................................................
@@ -313,7 +352,7 @@ is already made up of a married couple?
 
 exception Family_Trouble of string ;;
 
-let marry = 
+let marry =
   fun _ -> failwith "marry not implemented" ;;
 
 (*......................................................................
@@ -325,7 +364,7 @@ assumptions provided in the type definition of family to determine how
 to behave in corner cases.
 ......................................................................*)
 
-let add_to_family = 
+let add_to_family =
   fun _ -> failwith "add_to_family not implemented" ;;
 
 (*......................................................................
@@ -333,7 +372,7 @@ Exercise 14: Complete the function below that counts the number of
 people in a given family. Be sure you count all spouses and children.
 ......................................................................*)
 
-let count_people = 
+let count_people =
   fun _ -> failwith "count_people not implemented" ;;
 
 (*......................................................................
@@ -353,7 +392,7 @@ inequality. You may be accustomed to other operators, like, "==" and
 the Pervasives module can help explain why.)
 ......................................................................*)
 
-let find_parents = 
+let find_parents =
   fun _ -> failwith "find_parents not implemented" ;;
 
 
@@ -397,7 +436,7 @@ edges.  The parameters you need to accept are, in order, the graph, a
 person and another person.
 ......................................................................*)
 
-let marry_graph = 
+let marry_graph =
   fun _ -> failwith "marry_graph not implemented" ;;
 
 (*There are far fewer restrictions compared to our rigidly-defined
@@ -418,7 +457,7 @@ that includes the relationship whereby the third person is a child of
 the first two.
 ......................................................................*)
 
-let add_child_to_graph = 
+let add_child_to_graph =
   fun _ -> failwith "add_child_to_graph not implemented" ;;
 
 (*......................................................................
@@ -429,5 +468,5 @@ a string representing the name of the person whose parents you want
 to find, returning a person list for the parents.
 ......................................................................*)
 
-let find_parents_graph = 
+let find_parents_graph =
   fun _ -> failwith "find_parents_graph not implemented" ;;
